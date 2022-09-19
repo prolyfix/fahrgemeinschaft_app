@@ -33,14 +33,17 @@ class _DayNavigatorState extends State<DayNavigator> {
     driver = DriverStorage().fetchDriver(1);
   }
 
-  void modifyDay(int value) {
+  void modifyDay(int value) async {
     now = now.add(Duration(days: value));
     var _formattedDate2 = formatterAPI.format(now);
     setState(() {
       _formattedDate = formatter.format(now);
     });
-    monApi.setObject('drivers');
-    monApi.fetchApi();
+    monApi.setObject('calendar_rides');
+    monApi.setParams(
+        {'date[before]': _formattedDate2, 'date[after]': _formattedDate2});
+    await monApi.fetchApi().then((value) => inspect(monApi.isEmpty()));
+    inspect(monApi.isEmpty());
   }
 
   @override
