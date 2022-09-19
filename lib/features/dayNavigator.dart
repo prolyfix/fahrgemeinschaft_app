@@ -22,6 +22,7 @@ class _DayNavigatorState extends State<DayNavigator> {
   late Future<CalendarRide> calendarRide;
   DateTime now = DateTime.now();
   var formatter = DateFormat('dd-MM-yyyy');
+  var formatterAPI = DateFormat('yyyy-MM-dd');
   late String _formattedDate = formatter.format(now);
 
   @override
@@ -32,10 +33,12 @@ class _DayNavigatorState extends State<DayNavigator> {
 
   void modifyDay(int value) {
     now = now.add(Duration(days: value));
+    var _formattedDate2 = formatterAPI.format(now);
     setState(() {
       _formattedDate = formatter.format(now);
     });
-    calendarRide = CalendarRideStorage().fetchCalendarRideById(1);
+    calendarRide =
+        CalendarRideStorage().fetchDriverFromDate(_formattedDate2.toString());
     inspect(calendarRide);
   }
 
