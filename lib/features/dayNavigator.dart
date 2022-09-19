@@ -8,6 +8,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:fahrgemeinschaft_app/utility/Api.dart';
 
 class DayNavigator extends StatefulWidget {
   const DayNavigator({super.key});
@@ -21,6 +22,7 @@ class _DayNavigatorState extends State<DayNavigator> {
   late Future<Driver> driver;
   late Future<CalendarRide> calendarRide;
   DateTime now = DateTime.now();
+  Api monApi = Api();
   var formatter = DateFormat('dd-MM-yyyy');
   var formatterAPI = DateFormat('yyyy-MM-dd');
   late String _formattedDate = formatter.format(now);
@@ -37,9 +39,8 @@ class _DayNavigatorState extends State<DayNavigator> {
     setState(() {
       _formattedDate = formatter.format(now);
     });
-    calendarRide =
-        CalendarRideStorage().fetchDriverFromDate(_formattedDate2.toString());
-    inspect(calendarRide);
+    monApi.setObject('drivers');
+    monApi.fetchApi();
   }
 
   @override

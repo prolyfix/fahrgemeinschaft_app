@@ -11,14 +11,10 @@ class CalendarRide {
       {required this.id, required this.date, required this.driver});
 
   factory CalendarRide.fromJson(Map<String, dynamic> json) {
-    if (json["hydra:member"][0] != null) {
-      Driver driver =
-          Driver.fromJson(json["hydra:member"][0]["ride"]["driver"]);
-      return CalendarRide(
-          id: json["hydra:member"][0]["id"],
-          date: DateTime.parse(json["hydra:member"][0]['date'].toString()),
-          driver: driver);
-    }
-    return 0;
+    Driver driver = Driver.fromJson(json["hydra:member"][0]["ride"]["driver"]);
+    return CalendarRide(
+        id: json["hydra:member"][0]["id"],
+        date: DateTime.parse(json["hydra:member"][0]['date'].toString()),
+        driver: driver);
   }
 }
