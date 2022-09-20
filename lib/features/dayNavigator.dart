@@ -31,7 +31,7 @@ class _DayNavigatorState extends State<DayNavigator> {
     super.initState();
   }
 
-  void modifyDay(int value) async {
+  void modifyDay(int value) {
     now = now.add(Duration(days: value));
     var _formattedDate2 = formatterAPI.format(now);
     setState(() {
@@ -41,12 +41,12 @@ class _DayNavigatorState extends State<DayNavigator> {
     monApi.setParams(
         {'date[before]': _formattedDate2, 'date[after]': _formattedDate2});
     debugPrint("coucou");
-    monApi.fetchApi();
-    debugPrint("coucou");
-    if (!monApi.isEmpty()) {
-      calendarRide = CalendarRide.fromJson(monApi.getData());
-      inspect(calendarRide);
-    }
+    monApi.fetchApi().then((bool OK) {
+      if (!monApi.isEmpty()) {
+        //calendarRide = CalendarRide.fromJson(monApi.getData());
+        //inspect(calendarRide);
+      }
+    });
   }
 
   @override

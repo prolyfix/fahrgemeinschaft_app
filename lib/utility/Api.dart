@@ -23,7 +23,7 @@ class Api {
     this.params = parametres;
   }
 
-  Future<Null> fetchApi() async {
+  Future<bool> fetchApi() async {
     String url = prefix + object;
     if (params.isNotEmpty) {
       url += '?';
@@ -34,13 +34,16 @@ class Api {
       url = url.substring(0, url.length - 1);
     }
     debugPrint(url);
-    final response = await http.get(Uri.parse(url));
-    if (response.statusCode == 200) {
-      rawReponse = jsonDecode(response.body);
-    } else {
-      throw Exception('Failed to load album');
-    }
-    return;
+    http.get(Uri.parse(url)).then((response) {
+      if (response.statusCode == 200) {
+        jsonDecode(response.body);
+        return true;
+      } else {
+        throw Exception('Failed to load album');
+      }
+    });
+
+    return false;
   }
 
   bool isEmpty() {
