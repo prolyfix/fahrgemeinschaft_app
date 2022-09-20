@@ -20,6 +20,9 @@ class DayNavigator extends StatefulWidget {
 class _DayNavigatorState extends State<DayNavigator> {
   final List<bool> _selectedFruits = <bool>[false, false, false];
   late CalendarRide calendarRide;
+  late List<dynamic> calendarRides;
+  late List<ListTile> _finalView = [];
+  late List<ListTile> finalView = [];
   DateTime now = DateTime.now();
   Api monApi = Api();
   var formatter = DateFormat('dd-MM-yyyy');
@@ -42,10 +45,25 @@ class _DayNavigatorState extends State<DayNavigator> {
         {'date[before]': _formattedDate2, 'date[after]': _formattedDate2});
     debugPrint("coucou");
     monApi.fetchApi().then((bool OK) {
+      finalView = [];
+      inspect(monApi.isEmpty());
       if (!monApi.isEmpty()) {
-        //calendarRide = CalendarRide.fromJson(monApi.getData());
-        //inspect(calendarRide);
+        calendarRides = monApi.getData();
+        inspect(calendarRides);
+        calendarRides.forEach((element) {
+          calendarRide = CalendarRide.fromJson(element);
+          finalView.add(ListTile(
+              leading: Icon(Icons.car_crash_rounded),
+              title: Text('Hinfahrt: ' +
+                  calendarRide.driver.firstName +
+                  ' ' +
+                  calendarRide.driver.lastName),
+              subtitle: Text('Lenni Weigl, Leni Zepf, Juliette Baudot ')));
+        });
       }
+      setState(() {
+        _finalView = finalView;
+      });
     });
   }
 
@@ -92,18 +110,10 @@ class _DayNavigatorState extends State<DayNavigator> {
               child: Card(
                   child: Column(
             children: [
-              ListTile(
-                  leading: Icon(Icons.car_crash_rounded),
-                  title: Text('Hinfahrt: Marc Baudot'),
-                  subtitle: Text('Lenni Weigl, Leni Zepf, Juliette Baudot ')),
-              ListTile(
-                  leading: Icon(Icons.car_crash_rounded),
-                  title: Text('Hinfahrt: Anke Köllnik'),
-                  subtitle: Text('Lenni Weigl, Leni Zepf, Juliette Baudot ')),
-              ListTile(
-                  leading: Icon(Icons.backpack),
-                  title: Text('Rückfahrt: Anke Köllnik'),
-                  subtitle: Text('Lenni Weigl, Leni Zepf, Juliette Baudot ')),
+              ListView(
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  children: _finalView),
               TextButton(
                 child: Text('Änderung teilen!'),
                 style: ButtonStyle(

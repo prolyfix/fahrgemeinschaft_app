@@ -8,7 +8,7 @@ class Api {
   String object = "/";
   Map<String, dynamic> params = {};
   final String prefix = "http://fahrgemeinschaft.enconstruction.de/api";
-  late Map<String, dynamic> rawReponse;
+  late Map<String, dynamic> rawReponse = {};
   late Map<String, dynamic> data;
 
   bool isResponseEmpty() {
@@ -34,14 +34,14 @@ class Api {
       url = url.substring(0, url.length - 1);
     }
     debugPrint(url);
-    http.get(Uri.parse(url)).then((response) {
-      if (response.statusCode == 200) {
-        jsonDecode(response.body);
-        return true;
-      } else {
-        throw Exception('Failed to load album');
-      }
-    });
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      rawReponse = jsonDecode(response.body);
+      return true;
+    } else {
+      throw Exception('Failed to load album');
+    }
+    ;
 
     return false;
   }
@@ -50,7 +50,8 @@ class Api {
     return rawReponse["hydra:totalItems"] == 0;
   }
 
-  Map<String, dynamic> getData() {
-    return rawReponse["hydra:members"];
+  List<dynamic> getData() {
+    inspect(rawReponse["hydra:member"]);
+    return rawReponse["hydra:member"];
   }
 }
