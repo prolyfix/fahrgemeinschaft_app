@@ -19,8 +19,7 @@ class DayNavigator extends StatefulWidget {
 
 class _DayNavigatorState extends State<DayNavigator> {
   final List<bool> _selectedFruits = <bool>[false, false, false];
-  late Future<Driver> driver;
-  late Future<CalendarRide> calendarRide;
+  late CalendarRide calendarRide;
   DateTime now = DateTime.now();
   Api monApi = Api();
   var formatter = DateFormat('dd-MM-yyyy');
@@ -30,7 +29,6 @@ class _DayNavigatorState extends State<DayNavigator> {
   @override
   void initState() {
     super.initState();
-    driver = DriverStorage().fetchDriver(1);
   }
 
   void modifyDay(int value) async {
@@ -42,8 +40,13 @@ class _DayNavigatorState extends State<DayNavigator> {
     monApi.setObject('calendar_rides');
     monApi.setParams(
         {'date[before]': _formattedDate2, 'date[after]': _formattedDate2});
-    await monApi.fetchApi().then((value) => inspect(monApi.isEmpty()));
-    inspect(monApi.isEmpty());
+    debugPrint("coucou");
+    monApi.fetchApi();
+    debugPrint("coucou");
+    if (!monApi.isEmpty()) {
+      calendarRide = CalendarRide.fromJson(monApi.getData());
+      inspect(calendarRide);
+    }
   }
 
   @override
@@ -60,7 +63,7 @@ class _DayNavigatorState extends State<DayNavigator> {
               borderRadius: const BorderRadius.all(Radius.circular(8)),
               selectedBorderColor: Colors.red[700],
               selectedColor: Colors.white,
-              fillColor: Colors.red[200],
+              fillColor: Color.fromARGB(255, 13, 9, 9),
               onPressed: (index) => {modifyDay(index - 1)},
               constraints: const BoxConstraints(
                 minHeight: 40.0,
@@ -112,22 +115,7 @@ class _DayNavigatorState extends State<DayNavigator> {
             ],
           ))),
           Row(
-            children: [
-              FutureBuilder<Driver>(
-                future: driver,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Text(snapshot.data!.lastName);
-                  } else if (snapshot.hasError) {
-                    return Text('${snapshot.error}');
-                  }
-
-                  // By default, show a loading spinner.
-                  return const CircularProgressIndicator();
-                },
-              ),
-              Text('Hinfahrt')
-            ],
+            children: [Text('Hinfahrt')],
           ),
         ]);
   }

@@ -34,7 +34,7 @@ class Api {
       url = url.substring(0, url.length - 1);
     }
     debugPrint(url);
-    final response = await http.get(Uri.parse(prefix + object));
+    final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       rawReponse = jsonDecode(response.body);
     } else {
@@ -45,5 +45,9 @@ class Api {
 
   bool isEmpty() {
     return rawReponse["hydra:totalItems"] == 0;
+  }
+
+  Map<String, dynamic> getData() {
+    return rawReponse["hydra:members"];
   }
 }
