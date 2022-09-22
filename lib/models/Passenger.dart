@@ -1,13 +1,17 @@
+import 'Family.dart';
+
 class Passenger {
-  final int id;
   final String lastName;
   final String firstName;
+  final Family family;
 
   const Passenger(
-      {required this.id, required this.lastName, required this.firstName});
+      {required this.lastName, required this.firstName, required this.family});
 
   factory Passenger.fromJson(Map<String, dynamic> json) {
     return Passenger(
-        id: json['id'], lastName: 'temp', firstName: json['firstName']);
+        lastName: json['lastName'],
+        firstName: json['firstName'],
+        family: Family.fromJson(json['family']));
   }
 }

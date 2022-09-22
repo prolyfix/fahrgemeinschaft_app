@@ -54,17 +54,45 @@ class _DayNavigatorState extends State<DayNavigator> {
           calendarRide = CalendarRide.fromJson(element);
           finalView.add(ListTile(
               leading: Icon(Icons.car_crash_rounded),
-              title: Text('Hinfahrt: ' +
-                  calendarRide.driver.firstName +
-                  ' ' +
-                  calendarRide.driver.lastName),
-              subtitle: Text('Lenni Weigl, Leni Zepf, Juliette Baudot ')));
+              title: Row(children: [
+                Text('\u25A0',
+                    style: TextStyle(
+                        color: HexColor.fromHex(
+                            calendarRide.driver.family.color))),
+                Text('Hinfahrt: ' +
+                    calendarRide.driver.firstName +
+                    ' ' +
+                    calendarRide.driver.lastName)
+              ]),
+              subtitle: showPassenger(calendarRide)));
         });
       }
       setState(() {
         _finalView = finalView;
       });
     });
+  }
+
+  RichText showPassenger(CalendarRide calendarRide) {
+    String output = "";
+
+    return RichText(
+        text: TextSpan(
+            style: DefaultTextStyle.of(context).style,
+            children: PassengerList(calendarRide)));
+  }
+
+  List<TextSpan> PassengerList(CalendarRide calendarRide) {
+    List<TextSpan> output = [];
+    calendarRide.passengers.forEach((elem) => {
+          output.add(TextSpan(
+              text: '\u25CF',
+              style: TextStyle(color: HexColor.fromHex(elem.family.color)))),
+          output.add(TextSpan(text: elem.firstName)),
+          output.add(TextSpan(text: ' ')),
+          output.add(TextSpan(text: elem.lastName))
+        });
+    return output;
   }
 
   @override
@@ -129,4 +157,21 @@ class _DayNavigatorState extends State<DayNavigator> {
           ),
         ]);
   }
+}
+
+extension HexColor on Color {
+  /// String is in the format "aabbcc" or "ffaabbcc" with an optional leading "#".
+  static Color fromHex(String hexString) {
+    final buffer = StringBuffer();
+    if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
+    buffer.write(hexString.replaceFirst('#', ''));
+    return Color(int.parse(buffer.toString(), radix: 16));
+  }
+
+  /// Prefixes a hash sign if [leadingHashSign] is set to `true` (default is `true`).
+  String toHex({bool leadingHashSign = true}) => '${leadingHashSign ? '#' : ''}'
+      '${alpha.toRadixString(16).padLeft(2, '0')}'
+      '${red.toRadixString(16).padLeft(2, '0')}'
+      '${green.toRadixString(16).padLeft(2, '0')}'
+      '${blue.toRadixString(16).padLeft(2, '0')}';
 }
