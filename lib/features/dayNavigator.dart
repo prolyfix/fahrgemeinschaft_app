@@ -28,7 +28,7 @@ class _DayNavigatorState extends State<DayNavigator> {
   var formatter = DateFormat('dd-MM-yyyy');
   var formatterAPI = DateFormat('yyyy-MM-dd');
   late String _formattedDate = formatter.format(now);
-
+  var iconDrive;
   @override
   void initState() {
     super.initState();
@@ -37,30 +37,34 @@ class _DayNavigatorState extends State<DayNavigator> {
   void modifyDay(int value) {
     now = now.add(Duration(days: value));
     var _formattedDate2 = formatterAPI.format(now);
+
     setState(() {
       _formattedDate = formatter.format(now);
     });
     monApi.setObject('calendar_rides');
     monApi.setParams(
         {'date[before]': _formattedDate2, 'date[after]': _formattedDate2});
-    debugPrint("coucou");
     monApi.fetchApi().then((bool OK) {
       finalView = [];
-      inspect(monApi.isEmpty());
       if (!monApi.isEmpty()) {
         calendarRides = monApi.getData();
         inspect(calendarRides);
         calendarRides.forEach((element) {
           calendarRide = CalendarRide.fromJson(element);
+          if (calendarRide.direction == "in") {
+            iconDrive = Icon(Icons.arrow_forward);
+          } else {
+            iconDrive = Icon(Icons.arrow_back);
+          }
+          inspect(iconDrive);
           finalView.add(ListTile(
-              leading: Icon(Icons.car_crash_rounded),
+              leading: iconDrive,
               title: Row(children: [
                 Text('\u25A0',
                     style: TextStyle(
                         color: HexColor.fromHex(
                             calendarRide.driver.family.color))),
-                Text('Hinfahrt: ' +
-                    calendarRide.driver.firstName +
+                Text(calendarRide.driver.firstName +
                     ' ' +
                     calendarRide.driver.lastName)
               ]),
@@ -152,9 +156,6 @@ class _DayNavigatorState extends State<DayNavigator> {
               )
             ],
           ))),
-          Row(
-            children: [Text('Hinfahrt')],
-          ),
         ]);
   }
 }

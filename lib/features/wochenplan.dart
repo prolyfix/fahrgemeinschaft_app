@@ -2,8 +2,10 @@ import 'dart:developer';
 
 import 'package:fahrgemeinschaft_app/models/CalendarRide.dart';
 import 'package:fahrgemeinschaft_app/models/Driver.dart';
+import 'package:fahrgemeinschaft_app/models/Ride.dart';
 import 'package:fahrgemeinschaft_app/storage/CalendarRideStorage.dart';
 import 'package:fahrgemeinschaft_app/storage/DriverStorage.dart';
+import 'package:fahrgemeinschaft_app/utility/Api.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -18,6 +20,24 @@ class Wochenplan extends StatefulWidget {
 }
 
 class _WochenplanState extends State<Wochenplan> {
+  late List<Ride> rides = [];
+  Api monApi = Api();
+  late List<dynamic> rawRides;
+
+  @override
+  void initState() {
+    super.initState();
+    monApi.setObject('rides');
+    monApi.fetchApi().then((bool OK) {
+      if (!monApi.isEmpty()) {
+        rawRides = monApi.getData();
+        rawRides.forEach((element) {
+          rides.add(Ride.fromJson(element));
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([

@@ -5,32 +5,29 @@ import 'package:intl/intl.dart';
 import 'Driver.dart';
 import 'Passenger.dart';
 
-class CalendarRide {
+class Ride {
   final int id;
-  final DateTime date;
   final Driver driver;
   final List<Passenger> passengers;
   final String direction;
 
-  const CalendarRide(
+  const Ride(
       {required this.id,
-      required this.date,
       required this.driver,
       required this.passengers,
       required this.direction});
 
-  factory CalendarRide.fromJson(Map<String, dynamic> json) {
-    Driver driver = Driver.fromJson(json["ride"]["driver"]);
-    List jsonPassengers = json["ride"]["passengers"];
+  factory Ride.fromJson(Map<String, dynamic> json) {
+    Driver driver = Driver.fromJson(json["driver"]);
+    List jsonPassengers = json["passengers"];
     List<Passenger> passengers = [];
     jsonPassengers.forEach((element) {
       inspect(element);
       passengers.add(Passenger.fromJson(element));
     });
 
-    return CalendarRide(
+    return Ride(
         id: json["id"],
-        date: DateTime.parse(json['date'].toString()),
         direction: json["direction"],
         driver: driver,
         passengers: passengers);
