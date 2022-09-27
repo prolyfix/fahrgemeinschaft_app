@@ -10,12 +10,14 @@ class Ride {
   final Driver driver;
   final List<Passenger> passengers;
   final String direction;
+  final String weekday;
 
   const Ride(
       {required this.id,
       required this.driver,
       required this.passengers,
-      required this.direction});
+      required this.direction,
+      required this.weekday});
 
   factory Ride.fromJson(Map<String, dynamic> json) {
     Driver driver = Driver.fromJson(json["driver"]);
@@ -30,6 +32,7 @@ class Ride {
         id: json["id"],
         direction: json["direction"],
         driver: driver,
-        passengers: passengers);
+        passengers: passengers,
+        weekday: json["weekday"]);
   }
 }

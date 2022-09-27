@@ -21,8 +21,18 @@ class Wochenplan extends StatefulWidget {
 
 class _WochenplanState extends State<Wochenplan> {
   late List<Ride> rides = [];
+  late Ride ride;
   Api monApi = Api();
   late List<dynamic> rawRides;
+  late var weeklyList = {
+    "monday": {"in": [], "out": []},
+    "tuesday": {"in": [], "out": []},
+    "wednesday": {"in": [], "out": []},
+    "thursday": {"in": [], "out": []},
+    "friday": {"in": [], "out": []},
+    "saturday": {"in": [], "out": []},
+    "sunday": {"in": [], "out": []}
+  };
 
   @override
   void initState() {
@@ -32,7 +42,7 @@ class _WochenplanState extends State<Wochenplan> {
       if (!monApi.isEmpty()) {
         rawRides = monApi.getData();
         rawRides.forEach((element) {
-          rides.add(Ride.fromJson(element));
+          ride = Ride.fromJson(element);
         });
       }
     });
