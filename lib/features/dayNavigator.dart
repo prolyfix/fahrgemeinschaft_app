@@ -4,6 +4,7 @@ import 'package:fahrgemeinschaft_app/models/CalendarRide.dart';
 import 'package:fahrgemeinschaft_app/models/Driver.dart';
 import 'package:fahrgemeinschaft_app/storage/CalendarRideStorage.dart';
 import 'package:fahrgemeinschaft_app/storage/DriverStorage.dart';
+import 'package:fahrgemeinschaft_app/storage/UserInfoStorage.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +26,7 @@ class _DayNavigatorState extends State<DayNavigator> {
   late List<ListTile> finalView = [];
   DateTime now = DateTime.now();
   Api monApi = Api();
+  UserInfoStorage userStorage = UserInfoStorage();
   var formatter = DateFormat('dd-MM-yyyy');
   var formatterAPI = DateFormat('yyyy-MM-dd');
   late String _formattedDate = formatter.format(now);
@@ -36,8 +38,8 @@ class _DayNavigatorState extends State<DayNavigator> {
 
   void modifyDay(int value) {
     now = now.add(Duration(days: value));
+    var test = userStorage.getToken();
     var _formattedDate2 = formatterAPI.format(now);
-
     setState(() {
       _formattedDate = formatter.format(now);
     });
