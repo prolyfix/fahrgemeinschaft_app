@@ -1,3 +1,4 @@
+import 'package:fahrgemeinschaft_app/utility/Api.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,8 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
+  final Api api = Api();
+  String username = "";
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -22,7 +25,10 @@ class _LoginState extends State<Login> {
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter some text';
+                } else {
+                  username = value;
                 }
+
                 return null;
               },
             ),
@@ -33,6 +39,7 @@ class _LoginState extends State<Login> {
                 if (value == null || value.isEmpty) {
                   return 'Please enter some text';
                 }
+
                 return null;
               },
             ),
@@ -40,6 +47,9 @@ class _LoginState extends State<Login> {
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: ElevatedButton(
                 onPressed: () {
+                  api.setObject('login_check');
+                  api.setParams({username: username});
+                  api.fetchApi();
                   // Validate returns true if the form is valid, or false otherwise.
                   if (_formKey.currentState!.validate()) {
                     // If the form is valid, display a snackbar. In the real world,
