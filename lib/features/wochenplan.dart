@@ -24,14 +24,17 @@ class _WochenplanState extends State<Wochenplan> {
   late Ride ride;
   Api monApi = Api();
   late List<dynamic> rawRides;
-  late var weeklyList = {
-    "monday": {"in": [], "out": []},
-    "tuesday": {"in": [], "out": []},
-    "wednesday": {"in": [], "out": []},
-    "thursday": {"in": [], "out": []},
-    "friday": {"in": [], "out": []},
-    "saturday": {"in": [], "out": []},
-    "sunday": {"in": [], "out": []}
+  Map<String, dynamic> weeklyList = {
+    "monday_in": [],
+    "monday_out": [],
+    "tuesday_in": [],
+    "tuesday_out": [],
+    "wednesday_in": [],
+    "wednesday_out": [],
+    "thursday_in": [],
+    "thursday_out": [],
+    "friday_in": [],
+    "friday_out": [],
   };
 
   @override
@@ -43,6 +46,8 @@ class _WochenplanState extends State<Wochenplan> {
         rawRides = monApi.getData();
         rawRides.forEach((element) {
           ride = Ride.fromJson(element);
+          weeklyList[ride.weekday.toString() + '_' + ride.direction.toString()]
+              .add(ride);
         });
       }
     });
@@ -103,12 +108,7 @@ class _WochenplanState extends State<Wochenplan> {
             ),
             children: <Widget>[
               TableCell(child: Text('In')),
-              TableCell(
-                  child: Row(children: <Column>[
-                Column(children: [Text('Marc Baudot')]),
-                Column(
-                    children: [Text('Juliette'), Text('Leni'), Text('Ilvy')]),
-              ])),
+              TableCell(child: Text('tresla')),
               TableCell(child: Text('Montag')),
               TableCell(child: Text('Montag')),
               TableCell(child: Text('Montag')),
