@@ -24,17 +24,39 @@ class _WochenplanState extends State<Wochenplan> {
   late Ride ride;
   Api monApi = Api();
   late List<dynamic> rawRides;
-  Map<String, dynamic> weeklyList = {
-    "monday_in": [],
-    "monday_out": [],
-    "tuesday_in": [],
-    "tuesday_out": [],
-    "wednesday_in": [],
-    "wednesday_out": [],
-    "thursday_in": [],
-    "thursday_out": [],
-    "friday_in": [],
-    "friday_out": [],
+  late List<Widget> _monday_in = [];
+  late List<Widget> monday_in = [];
+  late Map<String, List<Widget>> weeklyD = {
+    'monday_in': [],
+    'monday_out': [],
+    'tuesday_in': [],
+    'tuesday_out': [],
+    'wednesday_in': [],
+    'wednesday_out': [],
+    'thursday_in': [],
+    'thursday_out': [],
+    'friday_in': [],
+    'friday_out': [],
+    'saturday_in': [],
+    'saturday_out': [],
+    'sunday_in': [],
+    'sunday_out': [],
+  };
+  late Map<String, List<Widget>> _weeklyD = {
+    'monday_in': [],
+    'monday_out': [],
+    'tuesday_in': [],
+    'tuesday_out': [],
+    'wednesday_in': [],
+    'wednesday_out': [],
+    'thursday_in': [],
+    'thursday_out': [],
+    'friday_in': [],
+    'friday_out': [],
+    'saturday_in': [],
+    'saturday_out': [],
+    'sunday_in': [],
+    'sunday_out': [],
   };
 
   @override
@@ -46,10 +68,14 @@ class _WochenplanState extends State<Wochenplan> {
         rawRides = monApi.getData();
         rawRides.forEach((element) {
           ride = Ride.fromJson(element);
-          weeklyList[ride.weekday.toString() + '_' + ride.direction.toString()]
-              .add(ride);
+          _weeklyD[ride.weekday + '_' + ride.direction]!
+              .add(ListTile(title: Text(ride.driver.firstName)));
         });
       }
+      setState(() {
+        monday_in = weeklyD['monday_in'] ?? [];
+        weeklyD = _weeklyD;
+      });
     });
   }
 
@@ -108,23 +134,73 @@ class _WochenplanState extends State<Wochenplan> {
             ),
             children: <Widget>[
               TableCell(child: Text('In')),
-              TableCell(child: Text('tresla')),
-              TableCell(child: Text('Montag')),
-              TableCell(child: Text('Montag')),
-              TableCell(child: Text('Montag')),
-              TableCell(child: Text('Montag')),
+              TableCell(
+                child: ListView(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    children: weeklyD['monday_in'] ?? []),
+              ),
+              TableCell(
+                child: ListView(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    children: weeklyD['tuesday_in'] ?? []),
+              ),
+              TableCell(
+                child: ListView(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    children: weeklyD['wednesday_in'] ?? []),
+              ),
+              TableCell(
+                child: ListView(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    children: weeklyD['thursday_in'] ?? []),
+              ),
+              TableCell(
+                child: ListView(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    children: weeklyD['friday_in'] ?? []),
+              ),
             ]),
         TableRow(
             decoration: const BoxDecoration(
               color: Colors.grey,
             ),
             children: <Widget>[
-              TableCell(child: Text('Montag')),
-              TableCell(child: Text('Montag')),
-              TableCell(child: Text('Montag')),
-              TableCell(child: Text('Montag')),
-              TableCell(child: Text('Montag')),
-              TableCell(child: Text('Montag')),
+              TableCell(child: Text('Out')),
+              TableCell(
+                child: ListView(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    children: weeklyD['monday_out'] ?? []),
+              ),
+              TableCell(
+                child: ListView(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    children: weeklyD['tuesday_out'] ?? []),
+              ),
+              TableCell(
+                child: ListView(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    children: weeklyD['wednesday_out'] ?? []),
+              ),
+              TableCell(
+                child: ListView(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    children: weeklyD['thursday_out'] ?? []),
+              ),
+              TableCell(
+                child: ListView(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    children: weeklyD['friday_out'] ?? []),
+              ),
             ]),
       ],
     );

@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:fahrgemeinschaft_app/features/login.dart';
 import 'package:fahrgemeinschaft_app/models/CalendarRide.dart';
 import 'package:fahrgemeinschaft_app/models/Driver.dart';
 import 'package:fahrgemeinschaft_app/storage/CalendarRideStorage.dart';
@@ -30,23 +31,43 @@ class _DayNavigatorState extends State<DayNavigator> {
   var formatter = DateFormat('dd-MM-yyyy');
   var formatterAPI = DateFormat('yyyy-MM-dd');
   late String _formattedDate = formatter.format(now);
+  bool isEdit = false;
   var iconDrive;
   @override
   void initState() {
     super.initState();
   }
 
-  void modifyDay(int value) {
-    now = now.add(Duration(days: value));
+  void modifyDay(int value) async {
+    if (value == 0) {
+      now = await showDatePicker(
+              context: context,
+              initialDate: DateTime.now(),
+              firstDate: DateTime(1950),
+              //DateTime.now() - not to allow to choose before today.
+              lastDate: DateTime(2100)) ??
+          DateTime.now();
+    } else {
+      now = now.add(Duration(days: value));
+    }
     var test = userStorage.getToken();
     var _formattedDate2 = formatterAPI.format(now);
     setState(() {
       _formattedDate = formatter.format(now);
     });
+
     monApi.setObject('calendar_rides');
     monApi.setParams(
         {'date[before]': _formattedDate2, 'date[after]': _formattedDate2});
-    monApi.fetchApi().then((bool OK) {
+    monApi.fetchApi().then((bool OK) async {
+      if (OK == false) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => const Login(),
+          ),
+        );
+        return;
+      }
       finalView = [];
       if (!monApi.isEmpty()) {
         calendarRides = monApi.getData();
@@ -58,7 +79,6 @@ class _DayNavigatorState extends State<DayNavigator> {
           } else {
             iconDrive = Icon(Icons.arrow_back);
           }
-          inspect(iconDrive);
           finalView.add(ListTile(
               leading: iconDrive,
               title: Row(children: [
@@ -68,7 +88,14 @@ class _DayNavigatorState extends State<DayNavigator> {
                             calendarRide.driver.family.color))),
                 Text(calendarRide.driver.firstName +
                     ' ' +
-                    calendarRide.driver.lastName)
+                    calendarRide.driver.lastName),
+                isEdit
+                    ? Row(children: [
+                        IconButton(
+                            onPressed: () {}, icon: new Icon(Icons.delete)),
+                        Icon(Icons.rotate_90_degrees_ccw)
+                      ])
+                    : Text('')
               ]),
               subtitle: showPassenger(calendarRide)));
         });
@@ -96,7 +123,7 @@ class _DayNavigatorState extends State<DayNavigator> {
               style: TextStyle(color: HexColor.fromHex(elem.family.color)))),
           output.add(TextSpan(text: elem.firstName)),
           output.add(TextSpan(text: ' ')),
-          output.add(TextSpan(text: elem.lastName))
+          output.add(TextSpan(text: elem.lastName)),
         });
     return output;
   }
@@ -154,7 +181,12 @@ class _DayNavigatorState extends State<DayNavigator> {
                   foregroundColor:
                       MaterialStateProperty.all<Color>(Colors.blue),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  setState(() {
+                    isEdit = true;
+                    modifyDay(0);
+                  });
+                },
               )
             ],
           ))),

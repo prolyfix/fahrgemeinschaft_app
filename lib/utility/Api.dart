@@ -63,6 +63,8 @@ class Api {
     if (response.statusCode == 200) {
       rawReponse = jsonDecode(response.body);
       return true;
+    } else if (response.statusCode == 401) {
+      secureStorage.write(key: 'refresh_token', value: null);
     } else {
       throw Exception('Failed to load album');
     }
@@ -76,7 +78,6 @@ class Api {
   }
 
   List<dynamic> getData() {
-    inspect(rawReponse["hydra:member"]);
     return rawReponse["hydra:member"];
   }
 }

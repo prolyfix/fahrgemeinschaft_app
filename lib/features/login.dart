@@ -58,7 +58,6 @@ class _LoginState extends State<Login> {
                 onPressed: () {
                   api.setObject('login_check');
                   api.login(username, password).then((value) {
-                    inspect(value);
                     secureStorage.write(key: 'refresh_token', value: value);
                     Navigator.of(context).push(
                       MaterialPageRoute(
