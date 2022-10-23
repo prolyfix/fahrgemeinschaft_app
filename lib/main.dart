@@ -1,5 +1,6 @@
 import 'package:fahrgemeinschaft_app/features/dayNavigator.dart';
 import 'package:fahrgemeinschaft_app/features/login.dart';
+import 'package:fahrgemeinschaft_app/features/settings.dart';
 import 'package:fahrgemeinschaft_app/models/CalendarRide.dart';
 import 'package:fahrgemeinschaft_app/storage/UserInfoStorage.dart';
 import 'package:fahrgemeinschaft_app/utility/Api.dart';
@@ -48,9 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late List<Widget> _widgetOptions = <Widget>[
     DayNavigator(),
     Wochenplan(),
-    Text(
-      'Index 2: School',
-    ),
+    Settings(),
   ];
   void _onItemTapped(int index) {
     setState(() {

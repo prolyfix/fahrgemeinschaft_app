@@ -70,13 +70,20 @@ class _WochenplanState extends State<Wochenplan> {
         rawRides.forEach((element) {
           ride = Ride.fromJson(element);
           _weeklyD[ride.weekday + '_' + ride.direction]!.add(ListTile(
-              title: Row(children: [
-                Text('\u25A0',
-                    style: TextStyle(
-                        color: HexColor.fromHex(ride.driver.family.color))),
-                Text(ride.driver.firstName + ' ' + ride.driver.lastName),
-              ]),
-              subtitle: showPassenger(ride)));
+            title: Row(children: [
+              Text('\u25A0',
+                  style: TextStyle(
+                      color: HexColor.fromHex(ride.driver.family.color))),
+              Text(ride.driver.firstName + ' ' + ride.driver.lastName),
+            ]),
+            subtitle: showPassenger(ride),
+            trailing: PopupMenuButton(
+              itemBuilder: (ctx) => [
+                PopupMenuItem(child: Text("Delete")),
+                PopupMenuItem(child: Text("Edit")),
+              ],
+            ),
+          ));
         });
       }
       setState(() {

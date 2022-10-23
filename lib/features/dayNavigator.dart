@@ -81,6 +81,12 @@ class _DayNavigatorState extends State<DayNavigator> {
           }
           finalView.add(ListTile(
               leading: iconDrive,
+              trailing: PopupMenuButton(
+                itemBuilder: (ctx) => [
+                  PopupMenuItem(child: Text("Delete")),
+                  PopupMenuItem(child: Text("Edit")),
+                ],
+              ),
               title: Row(children: [
                 Text('\u25A0',
                     style: TextStyle(
