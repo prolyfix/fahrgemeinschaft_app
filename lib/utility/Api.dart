@@ -8,6 +8,7 @@ import 'dart:convert';
 class Api {
   String object = "/";
   Map<String, dynamic> params = {};
+  String type = "get";
   final String prefix = "https://fahrgemeinschaft.enconstruction.de/api";
   late Map<String, dynamic> rawReponse = {};
   late Map<String, dynamic> data;
@@ -44,8 +45,13 @@ class Api {
     this.params = parametres;
   }
 
+  void setType(String type) {
+    this.type = type;
+  }
+
   Future<bool> fetchApi() async {
     String url = prefix + object;
+    var response;
     FlutterSecureStorage secureStorage = FlutterSecureStorage();
     if (params.isNotEmpty) {
       url += '?';
@@ -58,19 +64,37 @@ class Api {
     debugPrint(url);
     final refreshToken =
         await secureStorage.read(key: 'refresh_token') ?? "null";
-    final response = await http.get(Uri.parse(url),
-        headers: {"Authorization": 'Bearer $refreshToken'});
-    if (response.statusCode == 200) {
-      rawReponse = jsonDecode(response.body);
-      return true;
-    } else if (response.statusCode == 401) {
-      secureStorage.write(key: 'refresh_token', value: null);
-    } else {
-      throw Exception('Failed to load album');
+    switch (type) {
+      case 'get':
+        response = await http.get(Uri.parse(url),
+            headers: {"Authorization": 'Bearer $refreshToken'});
+        break;
+      case 'post':
+        response = await http.post(Uri.parse(url),
+            headers: {"Authorization": 'Bearer $refreshToken'});
+        break;
+      case 'delete':
+        response = await http.delete(Uri.parse(url),
+            headers: {"Authorization": 'Bearer $refreshToken'});
+        break;
     }
-    ;
 
-    return false;
+    switch (response.statusCode) {
+      case 200:
+        rawReponse = jsonDecode(response.body);
+        this.type = 'get';
+        this.params = {};
+        return true;
+      case 204:
+        this.type = 'get';
+        this.params = {};
+        return true;
+      case 401:
+        secureStorage.write(key: 'refresh_token', value: null);
+        return false;
+      default:
+        throw Exception('Failed to load album');
+    }
   }
 
   bool isEmpty() {

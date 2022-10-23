@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:fahrgemeinschaft_app/features/dayNavigator.dart';
 import 'package:fahrgemeinschaft_app/models/CalendarRide.dart';
 import 'package:fahrgemeinschaft_app/models/Driver.dart';
 import 'package:fahrgemeinschaft_app/models/Ride.dart';
@@ -68,8 +69,14 @@ class _WochenplanState extends State<Wochenplan> {
         rawRides = monApi.getData();
         rawRides.forEach((element) {
           ride = Ride.fromJson(element);
-          _weeklyD[ride.weekday + '_' + ride.direction]!
-              .add(ListTile(title: Text(ride.driver.firstName)));
+          _weeklyD[ride.weekday + '_' + ride.direction]!.add(ListTile(
+              title: Row(children: [
+                Text('\u25A0',
+                    style: TextStyle(
+                        color: HexColor.fromHex(ride.driver.family.color))),
+                Text(ride.driver.firstName + ' ' + ride.driver.lastName),
+              ]),
+              subtitle: showPassenger(ride)));
         });
       }
       setState(() {
@@ -77,6 +84,28 @@ class _WochenplanState extends State<Wochenplan> {
         weeklyD = _weeklyD;
       });
     });
+  }
+
+  RichText showPassenger(Ride ride) {
+    String output = "";
+
+    return RichText(
+        text: TextSpan(
+            style: DefaultTextStyle.of(context).style,
+            children: PassengerList(ride)));
+  }
+
+  List<TextSpan> PassengerList(Ride calendarRide) {
+    List<TextSpan> output = [];
+    calendarRide.passengers.forEach((elem) => {
+          output.add(TextSpan(
+              text: '\u25CF',
+              style: TextStyle(color: HexColor.fromHex(elem.family.color)))),
+          output.add(TextSpan(text: elem.firstName)),
+          output.add(TextSpan(text: ' ')),
+          output.add(TextSpan(text: elem.lastName + '\n')),
+        });
+    return output;
   }
 
   @override

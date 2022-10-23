@@ -92,7 +92,13 @@ class _DayNavigatorState extends State<DayNavigator> {
                 isEdit
                     ? Row(children: [
                         IconButton(
-                            onPressed: () {}, icon: new Icon(Icons.delete)),
+                            onPressed: () {
+                              monApi.setType('delete');
+                              monApi.setObject('calendar_rides/' +
+                                  calendarRide.id.toString());
+                              monApi.fetchApi();
+                            },
+                            icon: new Icon(Icons.delete)),
                         Icon(Icons.rotate_90_degrees_ccw)
                       ])
                     : Text('')
@@ -130,10 +136,11 @@ class _DayNavigatorState extends State<DayNavigator> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
+    return SingleChildScrollView(
+        child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: ToggleButtons(
@@ -174,23 +181,12 @@ class _DayNavigatorState extends State<DayNavigator> {
               ListView(
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
-                  children: _finalView),
-              TextButton(
-                child: Text('Änderung teilen!'),
-                style: ButtonStyle(
-                  foregroundColor:
-                      MaterialStateProperty.all<Color>(Colors.blue),
-                ),
-                onPressed: () {
-                  setState(() {
-                    isEdit = true;
-                    modifyDay(0);
-                  });
-                },
-              )
+                  children: _finalView.length == 0
+                      ? [Text('Keine Fahrt an den Tag')]
+                      : _finalView),
             ],
           ))),
-        ]);
+        ]));
   }
 }
 
